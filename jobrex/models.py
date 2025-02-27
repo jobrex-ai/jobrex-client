@@ -3,14 +3,43 @@ from typing import Dict, List, Optional, Any, Union
 
 
 @dataclass
+class Url:
+    """URL with label and href."""
+    label: str
+    href: str
+
+
+@dataclass
 class ResumeBasics:
-    """Basic personal and contact information from a resume."""
+    """Basic personal and contact information."""
     name: str
     headline: str
     email: str
     phone: str
     location: str
-    url: Optional[Dict] = None
+    url: Optional[Url] = None
+
+
+@dataclass
+class CertificationItem:
+    """Certification item from a resume."""
+    name: str
+    issuer: str
+    date: str
+    summary: str
+    url: Optional[Url] = None
+
+
+@dataclass
+class EducationItem:
+    """Education item from a resume."""
+    institution: str
+    studyType: str
+    area: str
+    score: str
+    date: str
+    summary: str
+    url: Optional[Url] = None
 
 
 @dataclass
@@ -21,7 +50,16 @@ class ExperienceItem:
     location: str
     date: str
     summary: str
-    url: Optional[Dict] = None
+    url: Optional[Url] = None
+
+
+@dataclass
+class ProfileItem:
+    """Profile item from a resume."""
+    id: str
+    network: str
+    icon: str
+    url: Url
 
 
 @dataclass
@@ -30,6 +68,66 @@ class SkillItem:
     name: str
     description: str
     keywords: List[str]
+
+
+@dataclass
+class Summary:
+    """Professional summary section."""
+    content: str
+
+
+@dataclass
+class Certifications:
+    """Certifications section."""
+    items: List[CertificationItem]
+
+
+@dataclass
+class Education:
+    """Education section."""
+    items: List[EducationItem]
+
+
+@dataclass
+class Experience:
+    """Experience section."""
+    items: List[ExperienceItem]
+
+
+@dataclass
+class Profiles:
+    """Profiles section."""
+    items: List[ProfileItem]
+
+
+@dataclass
+class Skills:
+    """Skills section."""
+    items: List[SkillItem]
+
+
+@dataclass
+class Sections:
+    """All resume sections."""
+    summary: Summary
+    certifications: Certifications
+    education: Education
+    experience: Experience
+    profiles: Profiles
+    skills: Skills
+
+
+@dataclass
+class Resume:
+    """Complete resume data."""
+    basics: ResumeBasics
+    sections: Sections
+
+
+@dataclass
+class ResumeResponse:
+    """Response for resume extraction."""
+    data: Resume
 
 
 @dataclass
@@ -77,12 +175,6 @@ class ZoomMeetingResponse:
 class JobDescriptionResponse:
     """Response for job description extraction."""
     data: Dict[str, Any]
-
-
-@dataclass
-class ResumeResponse:
-    """Response for resume extraction."""
-    data: ResumeBasics
 
 
 @dataclass

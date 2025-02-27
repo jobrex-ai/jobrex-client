@@ -1,6 +1,7 @@
 import requests
 from typing import Dict, List, Optional, Any, Union
 from .models import (
+    Resume,
     ResumeResponse,
     JobDetailsResponse,
     ZoomMeetingResponse,
@@ -26,6 +27,7 @@ class BaseClient:
     def _make_request(self, method: str, endpoint: str, **kwargs) -> Dict:
         url = f"{self.base_url}/{endpoint.lstrip('/')}"
         response = self.session.request(method, url, **kwargs)
+        print(response.text)
         response.raise_for_status()
         return response.json()
 
@@ -42,14 +44,15 @@ class ResumesClient(BaseClient):
             files = {'file': f}
             return self._make_request('POST', 'v1/resumes/extract/', files=files)
 
-    def tailor_resume(self, user_data: Dict, job_details: str) -> ResumeResponse:
+    def tailor_resume(self, user_data: Resume, job_details: Dict, sections: List[str]) -> Resume:
         data = {
             "user_data": user_data,
-            "job_details": job_details
+            "job_details": job_details,
+            "sections": sections
         }
         return self._make_request('POST', 'v1/resumes/tailor/', json=data)
 
-    def rewrite_resume_section(self, text: str, prompt: Optional[str] = None, section_type: Optional[str] = "") -> ResumeRewriteResponse:
+    def rewrite_resume_section(self, text: str, section_type: Optional[str] = "") -> ResumeRewriteResponse:
         data = {
             "text": text,
             "type": section_type
@@ -59,10 +62,16 @@ class ResumesClient(BaseClient):
     def list_resume_indexes(self) -> IndexesListResponse:
         return self._make_request('GET', 'v1/resumes/list-indexes/')
 
-    def index_resume(self, documents: List[Dict], index_name: str) -> IndexResponse:
+    def index_resume(self, documents: List[Dict], index_name: str, id_field: str, search_fields: List[str], department_name: str|None=None) -> IndexResponse:
+        extra_fields = {}
+        if department_name:
+            extra_fields["department_name"] = department_name
         data = {
             "documents": documents,
-            "index_name": index_name
+            "index_name": index_name,
+            "id_field": id_field,
+            "search_fields": search_fields,
+            **extra_fields
         }
         return self._make_request('POST', 'v1/resumes/index/', json=data)
 
@@ -73,10 +82,13 @@ class ResumesClient(BaseClient):
         }
         return self._make_request('POST', 'v1/resumes/delete/', json=data)
 
-    def search_resumes(self, query: str, filters: Optional[Dict] = None) -> SearchResponse:
-        data = {"query": query}
+    def search_resumes(self, query: str, index_name:str, filters: Optional[Dict] = None, department_name: str|None=None) -> SearchResponse:
+        data = {"query": query, "index_name": index_name}
         if filters:
             data["filters"] = filters
+        if department_name:
+            data["department_name"] = department_name
+
         return self._make_request('POST', 'v1/resumes/search/', json=data)
 
     def search_jobrex_resumes(self, query: str, filters: Optional[Dict] = None) -> SearchResponse:
@@ -90,13 +102,6 @@ class JobsClient(BaseClient):
     """
     Client for interacting with the Jobrex API for jobs.
     """
-
-    def _make_request(self, method: str, endpoint: str, **kwargs) -> Dict:
-        url = f"{self.base_url}/{endpoint.lstrip('/')}"
-        response = self.session.request(method, url, **kwargs)
-        response.raise_for_status()
-        return response.json()
-
     # Job-related methods
     def get_candidate_score(self, job_details: Dict, resume_details: Dict,
                         threshold: float = 50.0, sections_weights: Optional[Dict] = None) -> JobMatchResult:
@@ -122,12 +127,9 @@ class JobsClient(BaseClient):
         }
         return self._make_request('POST', 'v1/jobs/job-writing/', json=data)
 
-    def parse_job_description(self, job_site_content: str, filter: bool = False,
-                               filter_threshold: int = 50) -> JobDetailsResponse:
+    def parse_job_description(self, job_site_content: str) -> JobDetailsResponse:
         data = {
-            "job_site_content": job_site_content,
-            "filter": filter,
-            "filter_threshold": filter_threshold
+            "text": job_site_content
         }
         return self._make_request('POST', 'v1/jobs/extract-job-description/', json=data)
 
@@ -146,10 +148,12 @@ class JobsClient(BaseClient):
     def list_job_indexes(self) -> IndexesListResponse:
         return self._make_request('GET', 'v1/jobs/list-indexes/')
 
-    def search_jobs(self, query: str, filters: Optional[Dict] = None) -> SearchResponse:
-        data = {"query": query}
+    def search_jobs(self, query: str, index_name: str, filters: Optional[Dict] = None, department_name: str|None=None) -> SearchResponse:
+        data = {"query": query, "index_name": index_name}
         if filters:
             data["filters"] = filters
+        if department_name:
+            data["department_name"] = department_name
         return self._make_request('POST', 'v1/jobs/search/', json=data)
 
     def delete_job(self, documents_ids: List[str], index_name: str) -> Dict:
@@ -159,9 +163,16 @@ class JobsClient(BaseClient):
         }
         return self._make_request('POST', 'v1/jobs/delete/', json=data)
 
-    def index_job(self, documents: List[Dict], index_name: str) -> Dict:
+    def index_job(self, documents: List[Dict], index_name: str, id_field: str, search_fields: List[str], department_name: str|None=None) -> Dict:
+        extra_fields = {}
+        if department_name:
+            extra_fields["department_name"] = department_name
         data = {
             "documents": documents,
-            "index_name": index_name
+            "index_name": index_name,
+            "id_field": id_field,
+            "search_fields": search_fields,
+            **extra_fields
+
         }
         return self._make_request('POST', 'v1/jobs/index/', json=data)
