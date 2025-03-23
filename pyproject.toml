@@ -31,4 +31,15 @@ dependencies = [
 "Bug Tracker" = "https://github.com/jobrex-ai/jobrex-client/issues"
 
 [tool.hatch.build.targets.wheel]
-packages = ["jobrex"] 
+packages = ["jobrex"]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["jobrex/tests"]
+python_files = "test_*.py"
+python_functions = "test_*" 
