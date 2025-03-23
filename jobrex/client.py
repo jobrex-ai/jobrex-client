@@ -27,7 +27,6 @@ class BaseClient:
     def _make_request(self, method: str, endpoint: str, **kwargs) -> Dict:
         url = f"{self.base_url}/{endpoint.lstrip('/')}"
         response = self.session.request(method, url, **kwargs)
-        print(response.text)
         response.raise_for_status()
         return response.json()
 
@@ -38,7 +37,6 @@ class ResumesClient(BaseClient):
     """
     
 
-    # Resume-related methods
     def parse_resume(self, file_path: str) -> ResumeResponse:
         with open(file_path, 'rb') as f:
             files = {'file': f}
@@ -82,19 +80,41 @@ class ResumesClient(BaseClient):
         }
         return self._make_request('POST', 'v1/resumes/delete/', json=data)
 
-    def search_resumes(self, query: str, index_name:str, filters: Optional[Dict] = None, department_name: str|None=None) -> SearchResponse:
+    def search_resumes(
+        self, 
+        query: str, 
+        index_name: str, 
+        filters: Optional[Dict] = None, 
+        department_name: str|None=None,
+        custom_query: Optional[Dict] = None,
+        top_k: Optional[int] = None
+    ) -> SearchResponse:
         data = {"query": query, "index_name": index_name}
         if filters:
             data["filters"] = filters
         if department_name:
             data["department_name"] = department_name
+        if custom_query:
+            data["custom_query"] = custom_query
+        if top_k:
+            data["top_k"] = top_k
 
         return self._make_request('POST', 'v1/resumes/search/', json=data)
 
-    def search_jobrex_resumes(self, query: str, filters: Optional[Dict] = None) -> SearchResponse:
+    def search_jobrex_resumes(
+        self, 
+        query: str, 
+        filters: Optional[Dict] = None,
+        custom_query: Optional[Dict] = None,
+        top_k: Optional[int] = None
+    ) -> SearchResponse:
         data = {"query": query}
         if filters:
             data["filters"] = filters
+        if custom_query:
+            data["custom_query"] = custom_query
+        if top_k:
+            data["top_k"] = top_k
         return self._make_request('POST', 'v1/resumes/search-jobrex/', json=data)
 
 
@@ -148,12 +168,24 @@ class JobsClient(BaseClient):
     def list_job_indexes(self) -> IndexesListResponse:
         return self._make_request('GET', 'v1/jobs/list-indexes/')
 
-    def search_jobs(self, query: str, index_name: str, filters: Optional[Dict] = None, department_name: str|None=None) -> SearchResponse:
+    def search_jobs(
+        self, 
+        query: str, 
+        index_name: str, 
+        filters: Optional[Dict] = None, 
+        department_name: str|None=None,
+        custom_query: Optional[Dict] = None,
+        top_k: Optional[int] = None
+    ) -> SearchResponse:
         data = {"query": query, "index_name": index_name}
         if filters:
             data["filters"] = filters
         if department_name:
             data["department_name"] = department_name
+        if custom_query:
+            data["custom_query"] = custom_query
+        if top_k:
+            data["top_k"] = top_k
         return self._make_request('POST', 'v1/jobs/search/', json=data)
 
     def delete_job(self, documents_ids: List[str], index_name: str) -> Dict:

@@ -241,8 +241,9 @@ client = ResumesClient(api_key="your_api_key_here")
 # Search for resumes
 query = "Data Scientist"
 index_name = "my_resume_index"
+top_k = 10
 
-search_response = client.search_resumes(query, index_name)
+search_response = client.search_resumes(query, index_name, top_k=10)
 print(search_response)
 ```
 ### Indexing Resumes
@@ -292,8 +293,9 @@ client = ResumesClient(api_key="your_api_key_here")
 
 # Search for resumes in the Jobrex pool
 query = "Data Scientist"
+top_k = 10
 
-search_response = client.search_jobrex_resumes(query)
+search_response = client.search_jobrex_resumes(query, top_k=10)
 print(search_response)
 ```
 
@@ -420,8 +422,9 @@ client = JobsClient(api_key="your_api_key_here")
 # Search for jobs
 query = "Software Engineer"
 index_name = "my_job_index"
+top_k = 10
 
-search_response = client.search_jobs(query, index_name)
+search_response = client.search_jobs(query, index_name, top_k=10)
 print(search_response)
 ```
 
