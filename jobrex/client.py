@@ -208,3 +208,82 @@ class JobsClient(BaseClient):
 
         }
         return self._make_request('POST', 'v1/jobs/index/', json=data)
+
+    def generate_screening_questions(self, resume_details: Dict, job_details: Dict) -> Dict:
+        """
+        Generate screening questions based on job description and resume.
+
+        Args:
+            resume_details (Dict): Dictionary containing the candidate's resume information
+            job_details (Dict): Dictionary containing the job position details
+
+        Returns:
+            Dict: Generated screening questions
+        """
+        data = {
+            "resume_details": resume_details,
+            "job_details": job_details
+        }
+        return self._make_request('POST', 'v1/jobs/generate-screening-questions/', json=data)
+
+    def generate_interview_criteria(self, job_details: Dict, interview_type: str = "Technical") -> Dict:
+        """
+        Generate interview criteria based on job description.
+
+        Args:
+            job_details (Dict): Dictionary containing the job position details
+            interview_type (str): Type of interview (technical, behavioral, etc.)
+
+        Returns:
+            Dict: Generated interview criteria
+        """
+        data = {
+            "job_details": job_details,
+            "interview_type": interview_type
+        }
+        return self._make_request('POST', 'v1/jobs/generate-interview-creterias/', json=data)
+
+    def generate_offer_letter(self, job_details: Dict, user_data: Dict, salary: str = None, benefits: str = None, company_policies: str = None) -> Dict:
+        """
+        Generate an offer letter based on job and candidate details.
+
+        Args:
+            job_details (Dict): Dictionary containing the job position details
+            user_data (Dict): Dictionary containing the candidate's information
+            salary (str, optional): Salary details
+            benefits (str, optional): Benefits comparison
+            company_policies (str, optional): Company policies information
+
+        Returns:
+            Dict: Generated offer letter
+        """
+        data = {
+            "job_details": job_details,
+            "user_data": user_data
+        }
+        if salary:
+            data["salary"] = salary
+        if benefits:
+            data["benefits"] = benefits
+        if company_policies:
+            data["company_policies"] = company_policies
+        return self._make_request('POST', 'v1/jobs/generate-offer-letter/', json=data)
+
+    def generate_screening_email(self, resume_details: Dict, job_details: Dict, questionnaire_responses: List[Dict]) -> Dict:
+        """
+        Generate a screening email based on job, resume, and questionnaire responses.
+
+        Args:
+            resume_details (Dict): Dictionary containing the candidate's resume information
+            job_details (Dict): Dictionary containing the job position details
+            questionnaire_responses (List[Dict]): List of questionnaire responses
+
+        Returns:
+            Dict: Generated screening email
+        """
+        data = {
+            "resume_details": resume_details,
+            "job_details": job_details,
+            "questionnaire_responses": questionnaire_responses
+        }
+        return self._make_request('POST', 'v1/jobs/generate-screening-email/', json=data)

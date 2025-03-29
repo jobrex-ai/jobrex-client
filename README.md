@@ -466,6 +466,186 @@ index_response = client.index_job(documents, index_name, id_field, search_fields
 print(index_response)
 ```
 
+### Generating Screening Questions
+
+```python
+from jobrex import JobsClient
+
+# Initialize the client with your API key
+client = JobsClient(api_key="your_api_key_here")
+
+# Job and resume details
+job_details = {
+    "title": "Senior Software Engineer",
+    "company": "XYZ Corp",
+    "description": "Looking for an experienced Python developer with machine learning expertise...",
+    "requirements": [
+        "5+ years of Python development",
+        "Experience with machine learning frameworks",
+        "Strong problem-solving skills"
+    ]
+}
+
+resume_details = {
+    "basics": {
+        "name": "John Doe",
+        "headline": "Senior Software Engineer",
+        "email": "john.doe@example.com",
+        "phone": "123-456-7890",
+        "location": "San Francisco, CA"
+    },
+    "skills": ["Python", "Machine Learning"],
+    "experience": [
+        {
+            "title": "Senior Software Engineer",
+            "company": "Tech Corp",
+            "duration": "3 years",
+            "description": "Led development of ML pipelines..."
+        }
+    ]
+}
+
+# Generate screening questions
+questions_response = client.generate_screening_questions(resume_details, job_details)
+print(questions_response)
+```
+
+### Generating Interview Criteria
+
+```python
+from jobrex import JobsClient
+
+# Initialize the client with your API key
+client = JobsClient(api_key="your_api_key_here")
+
+# Job details
+job_details = {
+    "title": "Senior Software Engineer",
+    "company": "XYZ Corp",
+    "description": "Looking for an experienced Python developer with machine learning expertise...",
+    "requirements": [
+        "5+ years of Python development",
+        "Experience with machine learning frameworks",
+        "Strong problem-solving skills"
+    ]
+}
+
+# Generate interview criteria (default type is "technical")
+technical_criteria = client.generate_interview_criteria(job_details)
+print(technical_criteria)
+
+# Generate behavioral interview criteria
+behavioral_criteria = client.generate_interview_criteria(job_details, interview_type="behavioral")
+print(behavioral_criteria)
+```
+
+### Generating Offer Letter
+
+```python
+from jobrex import JobsClient
+
+# Initialize the client with your API key
+client = JobsClient(api_key="your_api_key_here")
+
+# Job and candidate details
+job_details = {
+    "title": "Senior Software Engineer",
+    "company": "XYZ Corp",
+    "description": "Looking for an experienced Python developer...",
+    "requirements": [
+        "5+ years of Python development",
+        "Experience with machine learning frameworks",
+        "Strong problem-solving skills"
+    ]
+}
+
+user_data = {
+    "basics": {
+        "name": "John Doe",
+        "email": "john.doe@example.com",
+        "phone": "123-456-7890",
+        "location": "San Francisco, CA"
+    },
+    "experience": [
+        {
+            "title": "Senior Software Engineer",
+            "company": "Tech Corp",
+            "duration": "3 years",
+            "description": "Led development of ML pipelines..."
+        }
+    ]
+}
+
+# Additional offer details
+salary = "$150,000 per year with 15% annual bonus"
+benefits = "Health insurance, 401k matching, unlimited PTO"
+company_policies = "Flexible work hours, remote work options"
+
+# Generate offer letter
+offer_letter = client.generate_offer_letter(
+    job_details, 
+    user_data, 
+    salary=salary, 
+    benefits=benefits, 
+    company_policies=company_policies
+)
+print(offer_letter)
+```
+
+### Generating Screening Email
+
+```python
+from jobrex import JobsClient
+
+# Initialize the client with your API key
+client = JobsClient(api_key="your_api_key_here")
+
+# Job and resume details
+job_details = {
+    "title": "Senior Software Engineer",
+    "company": "XYZ Corp",
+    "description": "Looking for an experienced Python developer...",
+    "requirements": [
+        "5+ years of Python development",
+        "Experience with machine learning frameworks",
+        "Strong problem-solving skills"
+    ]
+}
+
+resume_details = {
+    "basics": {
+        "name": "John Doe",
+        "email": "john.doe@example.com",
+        "phone": "123-456-7890",
+        "location": "San Francisco, CA"
+    },
+    "experience": [
+        {
+            "title": "Senior Software Engineer",
+            "company": "Tech Corp",
+            "duration": "3 years",
+            "description": "Led development of ML pipelines..."
+        }
+    ]
+}
+
+# Questionnaire responses
+questionnaire_responses = [
+    {
+        "question": "How many years of Python experience do you have?",
+        "answer": "I have 7 years of professional Python development experience."
+    },
+    {
+        "question": "Describe your experience with machine learning frameworks.",
+        "answer": "I have extensive experience with TensorFlow and PyTorch, having built and deployed multiple production ML models."
+    }
+]
+
+# Generate screening email
+screening_email = client.generate_screening_email(resume_details, job_details, questionnaire_responses)
+print(screening_email)
+```
+
 ## License
 
 Jobrex Client is licensed under the MIT License.
