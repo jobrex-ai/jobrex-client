@@ -287,3 +287,128 @@ class JobsClient(BaseClient):
             "questionnaire_responses": questionnaire_responses
         }
         return self._make_request('POST', 'v1/jobs/generate-screening-email/', json=data)
+
+    def get_calendar_available_times(
+        self,
+        recruiter_email: str,
+        date: str,
+        working_start_hour: int,
+        working_end_hour: int,
+        time_zone: str,
+        calendar_provider: str,
+        calendar_credentials: Dict[str, str]
+    ) -> Dict:
+        """
+        Get available time slots from a recruiter's calendar.
+
+        Args:
+            recruiter_email (str): Email of the recruiter whose calendar to check
+            date (str): Date to check availability for in YYYY-MM-DD format
+            working_start_hour (int): Start hour of working day in 24-hour format (0-23)
+            working_end_hour (int): End hour of working day in 24-hour format (1-24)
+            time_zone (str): Timezone for the availability check (e.g. 'America/New_York')
+            calendar_provider (str): Calendar provider to use ('google' or 'outlook')
+            calendar_credentials (Dict[str, str]): Dictionary containing calendar API credentials
+
+        Returns:
+            Dict: Available time slots
+        """
+        data = {
+            "recruiter_email": recruiter_email,
+            "date": date,
+            "working_start_hour": working_start_hour,
+            "working_end_hour": working_end_hour,
+            "time_zone": time_zone,
+            "calendar_provider": calendar_provider,
+            "calendar_credentials": calendar_credentials
+        }
+        return self._make_request('POST', 'v1/jobs/get-calendar-available-times/', json=data)
+
+    def get_zoom_transcript(self, meeting_id: str, access_token: str) -> Dict:
+        """
+        Retrieve transcript from a Zoom meeting.
+
+        Args:
+            meeting_id (str): ID of the Zoom meeting
+            access_token (str): Zoom API access token
+
+        Returns:
+            Dict: Meeting transcript
+        """
+        data = {
+            "meeting_id": meeting_id,
+            "access_token": access_token
+        }
+        return self._make_request('POST', 'v1/jobs/retrieve-zoom-transcript/', json=data)
+
+    def get_teams_transcript(self, meeting_id: str, access_token: str) -> Dict:
+        """
+        Retrieve transcript from a Teams meeting.
+
+        Args:
+            meeting_id (str): ID of the Teams meeting
+            access_token (str): Teams API access token
+
+        Returns:
+            Dict: Meeting transcript
+        """
+        data = {
+            "meeting_id": meeting_id,
+            "access_token": access_token
+        }
+        return self._make_request('POST', 'v1/jobs/retrieve-teams-transcript/', json=data)
+
+    def extract_interview_responses(
+        self,
+        transcript: str,
+        interviewee_name: str,
+        interviewer_name: str
+    ) -> Dict:
+        """
+        Extract interview responses from a transcript.
+
+        Args:
+            transcript (str): The interview transcript in VTT format
+            interviewee_name (str): Name or identifier of the interviewee
+            interviewer_name (str): Name or identifier of the interviewer
+
+        Returns:
+            Dict: Extracted interview responses
+        """
+        data = {
+            "transcript": transcript,
+            "interviewee_name": interviewee_name,
+            "interviewer_name": interviewer_name
+        }
+        return self._make_request('POST', 'v1/jobs/extract-interview-responses/', json=data)
+
+    def generate_final_report(
+        self,
+        transcript: str,
+        evaluation_criteria: List[Dict[str, Union[str, float]]],
+        chunk_size: int = 4000,
+        overlap_size: int = 200
+    ) -> Dict:
+        """
+        Generate a final evaluation report based on an interview transcript.
+
+        Args:
+            transcript (str): The interview transcript to evaluate
+            evaluation_criteria (List[Dict[str, Union[str, float]]]): List of criteria to evaluate against.
+                Each criterion should have:
+                - criteria_name (str): Name of the evaluation criteria
+                - weight (float): Weight of this criteria in the final evaluation (0-1)
+                - description (str): Description of what this criteria evaluates
+            chunk_size (int, optional): Maximum size of each transcript chunk in characters. Defaults to 4000.
+            overlap_size (int, optional): Size of overlap between chunks in characters. Defaults to 200.
+
+        Returns:
+            Dict: Generated evaluation report
+        """
+        data = {
+            "transcript": transcript,
+            "evaluation_criteria": evaluation_criteria,
+            "chunk_size": chunk_size,
+            "overlap_size": overlap_size
+        }
+        return self._make_request('POST', 'v1/jobs/generate-final-report/', json=data)
