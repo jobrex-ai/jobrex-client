@@ -646,6 +646,151 @@ screening_email = client.generate_screening_email(resume_details, job_details, q
 print(screening_email)
 ```
 
+### Getting Calendar Available Times
+
+```python
+from jobrex import JobsClient
+
+# Initialize the client with your API key
+client = JobsClient(api_key="your_api_key_here")
+
+# Calendar availability parameters
+recruiter_email = "recruiter@company.com"
+date = "2024-04-10"  # YYYY-MM-DD format
+working_start_hour = 9  # 9 AM
+working_end_hour = 17   # 5 PM
+time_zone = "America/New_York"
+calendar_provider = "google"  # or "outlook"
+calendar_credentials = {
+    "access_token": "your_calendar_api_access_token",
+    "refresh_token": "your_calendar_api_refresh_token",
+    # Add other required credentials based on the provider
+}
+
+# Get available time slots
+available_times = client.get_calendar_available_times(
+    recruiter_email=recruiter_email,
+    date=date,
+    working_start_hour=working_start_hour,
+    working_end_hour=working_end_hour,
+    time_zone=time_zone,
+    calendar_provider=calendar_provider,
+    calendar_credentials=calendar_credentials
+)
+print(available_times)
+```
+
+### Getting Zoom Meeting Transcript
+
+```python
+from jobrex import JobsClient
+
+# Initialize the client with your API key
+client = JobsClient(api_key="your_api_key_here")
+
+# Zoom meeting details
+meeting_id = "your_zoom_meeting_id"
+access_token = "your_zoom_access_token"
+
+# Get the transcript
+transcript = client.get_zoom_transcript(meeting_id, access_token)
+print(transcript)
+```
+
+### Getting Teams Meeting Transcript
+
+```python
+from jobrex import JobsClient
+
+# Initialize the client with your API key
+client = JobsClient(api_key="your_api_key_here")
+
+# Teams meeting details
+meeting_id = "your_teams_meeting_id"
+access_token = "your_teams_access_token"
+
+# Get the transcript
+transcript = client.get_teams_transcript(meeting_id, access_token)
+print(transcript)
+```
+
+### Extracting Interview Responses
+
+```python
+from jobrex import JobsClient
+
+# Initialize the client with your API key
+client = JobsClient(api_key="your_api_key_here")
+
+# Interview transcript details
+transcript = """
+WEBVTT
+
+00:00:00.000 --> 00:00:05.000
+Interviewer: Tell me about your experience with Python.
+
+00:00:05.000 --> 00:00:15.000
+Candidate: I have 5 years of experience using Python for web development...
+"""
+interviewee_name = "John Doe"
+interviewer_name = "Jane Smith"
+
+# Extract responses
+responses = client.extract_interview_responses(
+    transcript=transcript,
+    interviewee_name=interviewee_name,
+    interviewer_name=interviewer_name
+)
+print(responses)
+```
+
+### Generating Final Interview Report
+
+```python
+from jobrex import JobsClient
+
+# Initialize the client with your API key
+client = JobsClient(api_key="your_api_key_here")
+
+# Interview evaluation details
+transcript = """
+WEBVTT
+
+00:00:00.000 --> 00:00:05.000
+Interviewer: Tell me about your experience with Python.
+
+00:00:05.000 --> 00:00:15.000
+Candidate: I have 5 years of experience using Python for web development...
+"""
+
+evaluation_criteria = [
+    {
+        "criteria_name": "Technical Skills",
+        "weight": 0.4,
+        "description": "Evaluate the candidate's technical knowledge and experience"
+    },
+    {
+        "criteria_name": "Communication",
+        "weight": 0.3,
+        "description": "Assess how well the candidate explains technical concepts"
+    },
+    {
+        "criteria_name": "Problem Solving",
+        "weight": 0.3,
+        "description": "Evaluate the candidate's approach to solving technical challenges"
+    }
+]
+
+# Generate the report
+report = client.generate_final_report(
+    transcript=transcript,
+    evaluation_criteria=evaluation_criteria,
+    chunk_size=4000,  # Optional: Size of text chunks for processing
+    overlap_size=200  # Optional: Overlap between chunks
+)
+print(report)
+```
+
 ## License
 
 Jobrex Client is licensed under the MIT License.
