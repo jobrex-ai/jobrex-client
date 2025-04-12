@@ -42,7 +42,7 @@ from jobrex import ResumesClient
 client = ResumesClient(api_key="your_api_key_here")
 
 # User data and job details
-user_data = {
+resume_details = {
     "basics": {
         "name": "John Doe",
         "headline": "Senior Software Engineer",
@@ -196,7 +196,7 @@ job_details = {
 }
 
 # Tailor the resume
-tailored_response = client.tailor_resume(user_data, job_details, ["summary", "certifications", "experience", "education", "skills"])
+tailored_response = client.tailor_resume(resume_details, job_details, ["summary", "certifications", "experience", "education", "skills"])
 print(tailored_response)
 ```
 
@@ -559,7 +559,7 @@ job_details = {
     ]
 }
 
-user_data = {
+resume_details = {
     "basics": {
         "name": "John Doe",
         "email": "john.doe@example.com",
@@ -584,7 +584,7 @@ company_policies = "Flexible work hours, remote work options"
 # Generate offer letter
 offer_letter = client.generate_offer_letter(
     job_details, 
-    user_data, 
+    resume_details, 
     salary=salary, 
     benefits=benefits, 
     company_policies=company_policies

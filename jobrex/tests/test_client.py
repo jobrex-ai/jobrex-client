@@ -102,7 +102,7 @@ class TestResumesClient:
     def test_tailor_resume(self, mock_make_request):
         """Test the tailor_resume method."""
         # Setup mock data
-        user_data = Mock(spec=Resume)
+        resume_details = Mock(spec=Resume)
         job_details = {"title": "Software Engineer", "description": "Job description"}
         sections = ["summary", "experience"]
         
@@ -126,7 +126,7 @@ class TestResumesClient:
         }
         
         client = ResumesClient(api_key="test_api_key")
-        result = client.tailor_resume(user_data, job_details, sections)
+        result = client.tailor_resume(resume_details, job_details, sections)
         
         # Verify request was made correctly
         mock_make_request.assert_called_once()

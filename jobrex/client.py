@@ -42,9 +42,9 @@ class ResumesClient(BaseClient):
             files = {'file': f}
             return self._make_request('POST', 'v1/resumes/extract/', files=files)
 
-    def tailor_resume(self, user_data: Resume, job_details: Dict, sections: List[str]) -> Resume:
+    def tailor_resume(self, resume_details: Resume, job_details: Dict, sections: List[str]) -> Resume:
         data = {
-            "user_data": user_data,
+            "resume_details": resume_details,
             "job_details": job_details,
             "sections": sections
         }
@@ -243,13 +243,13 @@ class JobsClient(BaseClient):
         }
         return self._make_request('POST', 'v1/jobs/generate-interview-creterias/', json=data)
 
-    def generate_offer_letter(self, job_details: Dict, user_data: Dict, salary: str = None, benefits: str = None, company_policies: str = None) -> Dict:
+    def generate_offer_letter(self, job_details: Dict, resume_details: Dict, salary: str = None, benefits: str = None, company_policies: str = None) -> Dict:
         """
         Generate an offer letter based on job and candidate details.
 
         Args:
             job_details (Dict): Dictionary containing the job position details
-            user_data (Dict): Dictionary containing the candidate's information
+            resume_details (Dict): Dictionary containing the candidate's information
             salary (str, optional): Salary details
             benefits (str, optional): Benefits comparison
             company_policies (str, optional): Company policies information
@@ -259,7 +259,7 @@ class JobsClient(BaseClient):
         """
         data = {
             "job_details": job_details,
-            "user_data": user_data
+            "resume_details": resume_details
         }
         if salary:
             data["salary"] = salary
