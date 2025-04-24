@@ -295,7 +295,7 @@ client = ResumesClient(api_key="your_api_key_here")
 query = "Data Scientist"
 top_k = 10
 
-search_response = client.search_jobrex_resumes(query, top_k=10)
+search_response = client.search_jobrex(query, top_k=10)
 print(search_response)
 ```
 
