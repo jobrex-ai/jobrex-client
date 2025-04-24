@@ -370,7 +370,7 @@ client = JobsClient(api_key="your_api_key_here")
 job_site_content = "We are looking for a Senior Software Engineer with experience in Python and machine learning."
 
 # Parse job description
-parsed_job_response = client.parse_job_description(job_site_content)
+parsed_job_response = client.extract_job_description(job_site_content)
 print(parsed_job_response)
 ```
 
