@@ -266,7 +266,7 @@ class JobsClient(BaseClient):
             "job_details": job_details,
             "interview_type": interview_type
         }
-        return self._make_request('POST', 'v1/jobs/generate-interview-creterias/', json=data)
+        return self._make_request('POST', 'v1/jobs/generate-interview-criteria/', json=data)
 
     def generate_offer_letter(self, job_details: Dict, resume_details: Dict, salary: str = None, benefits: str = None, company_policies: str = None) -> Dict:
         """
