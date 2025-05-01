@@ -7,6 +7,6 @@ job matching, and more.
 """
 
 __version__ = "0.1.0a5" 
-from .client import ResumesClient, JobsClient
+from .client import ResumesClient, JobsClient, LayoutMode
 
-__all__ = ["ResumesClient", "JobsClient"]
+__all__ = ["ResumesClient", "JobsClient", "LayoutMode"]
