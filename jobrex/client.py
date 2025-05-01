@@ -147,7 +147,7 @@ class JobsClient(BaseClient):
         }
         return self._make_request('POST', 'v1/jobs/job-writing/', json=data)
 
-    def parse_job_description(self, job_site_content: str) -> JobDetailsResponse:
+    def extract_job_description(self, job_site_content: str) -> JobDetailsResponse:
         data = {
             "text": job_site_content
         }
