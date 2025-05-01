@@ -1,5 +1,6 @@
 import requests
 from typing import Dict, List, Optional, Any, Union
+from enum import Enum
 from .models import (
     Resume,
     ResumeResponse,
@@ -11,6 +12,13 @@ from .models import (
     SearchResponse,
     JobMatchResult,
 )
+
+
+class LayoutMode(str, Enum):
+    """Enum for resume layout parsing modes."""
+    AUTO = "auto"
+    TXT = "txt"
+    OCR = "ocr"
 
 
 class BaseClient:
@@ -37,10 +45,27 @@ class ResumesClient(BaseClient):
     """
     
 
-    def parse_resume(self, file_path: str) -> ResumeResponse:
+    def parse_resume(self, file_path: str, enable_layout: bool = False, layout_mode: LayoutMode = LayoutMode.TXT) -> ResumeResponse:
+        """
+        Parse a resume file.
+
+        Args:
+            file_path (str): Path to the resume file
+            enable_layout (bool, optional): Enable layout engine to parse the resume. Defaults to False.
+            layout_mode (LayoutMode, optional): Layout mode to parse the resume, if enable_layout is true.
+                                           Choices are LayoutMode.AUTO, LayoutMode.TXT, or LayoutMode.OCR. 
+                                           Defaults to LayoutMode.TXT.
+
+        Returns:
+            ResumeResponse: Parsed resume data
+        """
         with open(file_path, 'rb') as f:
             files = {'file': f}
-            return self._make_request('POST', 'v1/resumes/extract/', files=files)
+            data = {
+                'enable_layout': enable_layout,
+                'layout_mode': layout_mode.value
+            }
+            return self._make_request('POST', 'v1/resumes/extract/', files=files, data=data)
 
     def tailor_resume(self, resume_details: Resume, job_details: Dict, sections: List[str]) -> Resume:
         data = {

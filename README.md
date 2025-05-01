@@ -22,13 +22,26 @@ pip install jobrex-client
 ### Parsing a Resume
 
 ```python
-from jobrex import ResumesClient
+from jobrex import ResumesClient, LayoutMode
 
 # Initialize the client with your API key
 client = ResumesClient(api_key="your_api_key_here")
 
-# Parse a resume
+# Basic resume parsing
 resume_response = client.parse_resume("path/to/your/resume.pdf")
+
+# Parse resume with layout engine enabled (using default TXT mode)
+resume_response = client.parse_resume(
+    "path/to/your/resume.pdf",
+    enable_layout=True
+)
+
+# Parse resume with layout engine and specific mode
+resume_response = client.parse_resume(
+    "path/to/your/resume.pdf",
+    enable_layout=True,
+    layout_mode=LayoutMode.OCR  # Options: LayoutMode.AUTO, LayoutMode.TXT, LayoutMode.OCR
+)
 print(resume_response)
 ```
 
