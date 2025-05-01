@@ -101,7 +101,7 @@ class ResumesClient(BaseClient):
 
         return self._make_request('POST', 'v1/resumes/search/', json=data)
 
-    def search_jobrex_resumes(
+    def search_jobrex(
         self, 
         query: str, 
         filters: Optional[Dict] = None,
