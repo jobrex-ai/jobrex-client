@@ -18,7 +18,7 @@ class TestResumesClientIntegration:
     @patch("jobrex.client.BaseClient._make_request")
     def test_parse_and_tailor_resume(self, mock_make_request, sample_resume, sample_job_details):
         """Test parsing a resume and then tailoring it."""
-        # Mock the parse_resume response
+        # Mock the extract_resume response
         mock_make_request.return_value = {
             "data": {
                 "basics": {
@@ -43,7 +43,7 @@ class TestResumesClientIntegration:
         client = ResumesClient(api_key="test_api_key")
         m = mock_open(read_data="fake resume content")
         with patch("builtins.open", m):
-            parse_result = client.parse_resume("fake_resume.pdf")
+            parse_result = client.extract_resume("fake_resume.pdf")
         
         # Mock the tailor_resume response
         mock_make_request.return_value = {
@@ -87,7 +87,7 @@ class TestJobsClientIntegration:
     @patch("jobrex.client.BaseClient._make_request")
     def test_write_and_parse_job(self, mock_make_request):
         """Test writing a job description and then parsing it."""
-        # Mock the write_job_description response
+        # Mock the extract_job_description response
         job_response = {
             "data": {
                 "title": "Senior Software Engineer",
@@ -106,7 +106,7 @@ class TestJobsClientIntegration:
         
         # First call to write job description
         client = JobsClient(api_key="test_api_key")
-        write_result = client.write_job_description(
+        write_result = client.job_writing(
             job_title="Senior Software Engineer",
             hiring_needs="Need a skilled developer with 5+ years of experience",
             company_description="Tech Corp is a leading software company",
@@ -120,7 +120,7 @@ class TestJobsClientIntegration:
         
         # Now parse the job description
         job_content = write_result["data"]["description"]
-        parse_result = client.parse_job_description(job_content)
+        parse_result = client.extract_job_description(job_content)
         
         # Verify the results
         assert write_result["data"]["title"] == "Senior Software Engineer"
@@ -141,7 +141,7 @@ class TestJobsClientIntegration:
     @patch("jobrex.client.BaseClient._make_request")
     def test_job_candidate_matching(self, mock_make_request, sample_resume, sample_job_details):
         """Test matching a candidate to a job."""
-        # Mock the get_candidate_score response
+        # Mock the candidate_scoring response
         mock_make_request.return_value = {
             "selected": True,
             "feedback": "Great match for the position",
@@ -159,7 +159,7 @@ class TestJobsClientIntegration:
         }
         
         client = JobsClient(api_key="test_api_key")
-        result = client.get_candidate_score(sample_job_details, resume_dict)
+        result = client.candidate_scoring(sample_job_details, resume_dict)
         
         # Verify the results
         assert result["selected"] is True

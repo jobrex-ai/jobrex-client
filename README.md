@@ -28,16 +28,16 @@ from jobrex import ResumesClient, LayoutMode
 client = ResumesClient(api_key="your_api_key_here")
 
 # Basic resume parsing
-resume_response = client.parse_resume("path/to/your/resume.pdf")
+resume_response = client.extract_resume("path/to/your/resume.pdf")
 
 # Parse resume with layout engine enabled (using default TXT mode)
-resume_response = client.parse_resume(
+resume_response = client.extract_resume(
     "path/to/your/resume.pdf",
     enable_layout=True
 )
 
 # Parse resume with layout engine and specific mode
-resume_response = client.parse_resume(
+resume_response = client.extract_resume(
     "path/to/your/resume.pdf",
     enable_layout=True,
     layout_mode=LayoutMode.OCR  # Options: LayoutMode.AUTO, LayoutMode.TXT, LayoutMode.OCR
@@ -226,7 +226,7 @@ text = "I have experience in software development and data analysis."
 section = "summary"
 
 # Rewrite the resume section
-rewritten_response = client.rewrite_resume_section(text, section)
+rewritten_response = client.rewrite_resume(text, section)
 print(rewritten_response)
 ```
 
@@ -344,7 +344,7 @@ resume_details = {
 }
 
 # Get candidate score
-score_response = client.get_candidate_score(job_details, resume_details)
+score_response = client.candidate_scoring(job_details, resume_details)
 print(score_response)
 ```
 
@@ -365,7 +365,7 @@ job_location = "San Francisco, CA"
 specific_benefits = "Health insurance, 401k, and flexible hours."
 
 # Write job description
-job_description_response = client.write_job_description(
+job_description_response = client.job_writing(
     job_title, hiring_needs, company_description, job_type, job_location, specific_benefits
 )
 print(job_description_response)
@@ -706,7 +706,7 @@ meeting_id = "your_zoom_meeting_id"
 access_token = "your_zoom_access_token"
 
 # Get the transcript
-transcript = client.get_zoom_transcript(meeting_id, access_token)
+transcript = client.retrieve_zoom_transcript(meeting_id, access_token)
 print(transcript)
 ```
 
@@ -802,6 +802,18 @@ report = client.generate_final_report(
     overlap_size=200  # Optional: Overlap between chunks
 )
 print(report)
+```
+
+### Get Subscription Info
+
+```python
+from jobrex import SubscriptionClient
+
+# Initialize the client with your API key
+client = JobsClient(api_key="your_api_key_here")
+
+subscription_info_response = client.subscriptions_info()
+print(subscription_info_response)
 ```
 
 ## License

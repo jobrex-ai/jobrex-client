@@ -45,7 +45,7 @@ class ResumesClient(BaseClient):
     """
     
 
-    def parse_resume(self, file_path: str, enable_layout: bool = False, layout_mode: LayoutMode = LayoutMode.TXT) -> ResumeResponse:
+    def extract_resume(self, file_path: str, enable_layout: bool = False, layout_mode: LayoutMode = LayoutMode.TXT) -> ResumeResponse:
         """
         Parse a resume file.
 
@@ -75,7 +75,7 @@ class ResumesClient(BaseClient):
         }
         return self._make_request('POST', 'v1/resumes/tailor/', json=data)
 
-    def rewrite_resume_section(self, text: str, section_type: Optional[str] = "") -> ResumeRewriteResponse:
+    def rewrite_resume(self, text: str, section_type: Optional[str] = "") -> ResumeRewriteResponse:
         data = {
             "text": text,
             "type": section_type
@@ -147,8 +147,8 @@ class JobsClient(BaseClient):
     """
     Client for interacting with the Jobrex API for jobs.
     """
-    # Job-related methods
-    def get_candidate_score(self, job_details: Dict, resume_details: Dict,
+    # Job-related methods candidate_scoring
+    def candidate_scoring(self, job_details: Dict, resume_details: Dict,
                         threshold: float = 50.0, sections_weights: Optional[Dict] = None) -> JobMatchResult:
         data = {
             "job_details": job_details,
@@ -159,7 +159,7 @@ class JobsClient(BaseClient):
             data["sections_weights"] = sections_weights
         return self._make_request('POST', 'v1/jobs/candidate-scoring/', json=data)
 
-    def write_job_description(self, job_title: str, hiring_needs: str,
+    def job_writing(self, job_title: str, hiring_needs: str, 
                              company_description: str, job_type: str,
                              job_location: str, specific_benefits: str) -> JobDetailsResponse:
         data = {
@@ -349,7 +349,7 @@ class JobsClient(BaseClient):
         }
         return self._make_request('POST', 'v1/jobs/get-calendar-available-times/', json=data)
 
-    def get_zoom_transcript(self, meeting_id: str, access_token: str) -> Dict:
+    def retrieve_zoom_transcript(self, meeting_id: str, access_token: str) -> Dict:
         """
         Retrieve transcript from a Zoom meeting.
 
@@ -366,7 +366,7 @@ class JobsClient(BaseClient):
         }
         return self._make_request('POST', 'v1/jobs/retrieve-zoom-transcript/', json=data)
 
-    def get_teams_transcript(self, meeting_id: str, access_token: str) -> Dict:
+    def retrieve_teams_transcript(self, meeting_id: str, access_token: str) -> Dict:
         """
         Retrieve transcript from a Teams meeting.
 
@@ -437,3 +437,11 @@ class JobsClient(BaseClient):
             "overlap_size": overlap_size
         }
         return self._make_request('POST', 'v1/jobs/generate-final-report/', json=data)
+
+
+class SubscriptionClient(BaseClient):
+    """ 
+    Client for interacting with the Jobrex API for subscription management.
+    """
+    def subscriptions_info(self) -> Dict:
+        return self._make_request('GET', 'v1/subscriptions/info/')
