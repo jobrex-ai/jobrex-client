@@ -810,7 +810,7 @@ print(report)
 from jobrex import SubscriptionClient
 
 # Initialize the client with your API key
-client = JobsClient(api_key="your_api_key_here")
+client = SubscriptionClient(api_key="your_api_key_here")
 
 subscription_info_response = client.subscriptions_info()
 print(subscription_info_response)
