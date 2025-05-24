@@ -5,7 +5,7 @@ import pytest
 import json
 import os
 from unittest.mock import patch, Mock, mock_open
-from jobrex.client import BaseClient, ResumesClient, JobsClient
+from jobrex.client import BaseClient, ResumesClient, JobsClient, SubscriptionClient
 from jobrex.models import (
     Resume, ResumeResponse, JobDetailsResponse, ZoomMeetingResponse,
     ResumeRewriteResponse, IndexesListResponse, IndexResponse, SearchResponse,
@@ -58,7 +58,7 @@ class TestResumesClient:
     """Tests for the ResumesClient class."""
     
     @patch("jobrex.client.BaseClient._make_request")
-    def test_parse_resume(self, mock_make_request):
+    def test_extract_resume(self, mock_make_request):
         """Test the parse_resume method."""
         # Setup mock response
         mock_make_request.return_value = {
@@ -85,7 +85,7 @@ class TestResumesClient:
         m = mock_open(read_data="fake resume content")
         with patch("builtins.open", m):
             client = ResumesClient(api_key="test_api_key")
-            result = client.parse_resume("fake_resume.pdf")
+            result = client.extract_resume("fake_resume.pdf")
         
         # Verify request was made correctly
         mock_make_request.assert_called_once()
@@ -141,15 +141,15 @@ class TestResumesClient:
         assert result["sections"]["summary"]["content"] == "Tailored summary for Software Engineer"
     
     @patch("jobrex.client.BaseClient._make_request")
-    def test_rewrite_resume_section(self, mock_make_request):
-        """Test the rewrite_resume_section method."""
+    def test_rewrite_resume(self, mock_make_request):
+        """Test the rewrite_resume method."""
         # Setup mock response
         mock_make_request.return_value = {
             "text": "Improved resume section content"
         }
         
         client = ResumesClient(api_key="test_api_key")
-        result = client.rewrite_resume_section("Original content", "summary")
+        result = client.rewrite_resume("Original content", "summary")
         
         # Verify request was made correctly
         mock_make_request.assert_called_once()
@@ -188,8 +188,8 @@ class TestJobsClient:
     """Tests for the JobsClient class."""
     
     @patch("jobrex.client.BaseClient._make_request")
-    def test_get_candidate_score(self, mock_make_request):
-        """Test the get_candidate_score method."""
+    def test_candidate_scoring(self, mock_make_request):
+        """Test the candidate_scoring method."""
         # Setup mock data
         job_details = {"title": "Software Engineer", "description": "Job description"}
         resume_details = {"name": "John Doe", "skills": ["Python", "JavaScript"]}
@@ -204,7 +204,7 @@ class TestJobsClient:
         }
         
         client = JobsClient(api_key="test_api_key")
-        result = client.get_candidate_score(job_details, resume_details)
+        result = client.candidate_scoring(job_details, resume_details)
         
         # Verify request was made correctly
         mock_make_request.assert_called_once()
@@ -221,8 +221,8 @@ class TestJobsClient:
         assert "experience_level" in result
     
     @patch("jobrex.client.BaseClient._make_request")
-    def test_write_job_description(self, mock_make_request):
-        """Test the write_job_description method."""
+    def test_job_writing(self, mock_make_request):
+        """Test the job_writing method."""
         # Setup mock response
         mock_make_request.return_value = {
             "data": {
@@ -237,7 +237,7 @@ class TestJobsClient:
         }
         
         client = JobsClient(api_key="test_api_key")
-        result = client.write_job_description(
+        result = client.job_writing(
             job_title="Software Engineer",
             hiring_needs="Need a skilled developer",
             company_description="Tech company",
@@ -259,8 +259,8 @@ class TestJobsClient:
         assert result["filtered"] is False
     
     @patch("jobrex.client.BaseClient._make_request")
-    def test_parse_job_description(self, mock_make_request):
-        """Test the parse_job_description method."""
+    def test_extract_job_description(self, mock_make_request):
+        """Test the extract_job_description method."""
         # Setup mock response
         mock_make_request.return_value = {
             "data": {
@@ -275,7 +275,7 @@ class TestJobsClient:
         }
         
         client = JobsClient(api_key="test_api_key")
-        result = client.parse_job_description("Job description content")
+        result = client.extract_job_description("Job description content")
         
         # Verify request was made correctly
         mock_make_request.assert_called_once()
@@ -287,3 +287,30 @@ class TestJobsClient:
         # Verify result
         assert "data" in result
         assert result["data"]["title"] == "Software Engineer" 
+        
+
+class TestSubscriptionClient:
+    @patch("jobrex.client.BaseClient._make_request")
+    def test_subscriptions_info(self, mock_make_request):
+        """Test the subscriptions_info method."""
+        mock_make_request.return_value = {
+            "subscription_period": "monthly",
+            "total_requests_allowed": 10000,
+            "requests_used": 500,
+            "remaining_requests": 9500,
+            "reset_date": "2025-06-01T00:00:00Z",
+        }
+        
+        client = SubscriptionClient(api_key="test_api_key")
+        result = client.subscriptions_info()
+        
+        # Verify request was made correctly
+        mock_make_request.assert_called_once()
+        assert mock_make_request.call_args[0][0] == "GET"
+        assert mock_make_request.call_args[0][1] == "v1/subscriptions/info/"
+        
+        # Verify result
+        assert result["subscription_period"] == "monthly"
+        assert result["total_requests_allowed"] == 10000
+        assert result["requests_used"] == 500
+        assert result["remaining_requests"] == 9500
